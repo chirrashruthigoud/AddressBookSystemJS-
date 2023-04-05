@@ -1,13 +1,8 @@
 class Contact {
-    constructor(firstName, lastName, address, city, state, zip, phoneNumber, email) {
-      this.firstName = firstName;
-      this.lastName = lastName;
-      this.address = address;
-      this.city = city;
-      this.state = state;
-      this.zip = zip;
-      this.phoneNumber = phoneNumber;
+    constructor(name, email, phone) {
+      this.name = name;
       this.email = email;
+      this.phone = phone;
     }
   }
   
@@ -17,50 +12,47 @@ class Contact {
     }
   
     addContact(contact) {
+      if (!(contact instanceof Contact)) {
+        throw new Error("Provided object is not a valid contact.");
+      }
       this.contacts.push(contact);
     }
   
-    deleteContact(contact) {
-      const index = this.contacts.indexOf(contact);
-      if (index !== -1) {
-        this.contacts.splice(index, 1);
-      }
+    filterContactsByName(name) {
+      return this.contacts.filter((contact) => contact.name.toLowerCase().includes(name.toLowerCase()));
     }
   
-    getContacts() {
-      return this.contacts;
+    mapContactsToEmails() {
+      return this.contacts.map((contact) => contact.email);
     }
   
-    searchContacts(query) {
-      return this.contacts.filter(contact => {
-        return (
-          contact.firstName.includes(query) ||
-          contact.lastName.includes(query) ||
-          contact.phoneNumber.includes(query) ||
-          contact.email.includes(query)
-        );
-      });
-    }
-  
-    getNames() {
-      return this.contacts.map(contact => `${contact.firstName} ${contact.lastName}`);
-    }
-  
-    getTotalContacts() {
-      return this.contacts.reduce((total, contact) => {
-        return total + 1;
-      }, 0);
+    reduceContactsToPhoneNumbers() {
+      return this.contacts.reduce((phoneNumbers, contact) => {
+        phoneNumbers.push(contact.phone);
+        return phoneNumbers;
+      }, []);
     }
   }
   
-  // Example usage
-  const addressBook = new AddressBook();
+  // Create a new AddressBook instance
+  const myAddressBook = new AddressBook();
   
-  const contact1 = new Contact('John', 'Doe', '123 Main St', 'Anytown', 'CA', '12345', '555-555-5555', 'john.doe@example.com');
-  addressBook.addContact(contact1);
+  // Add some contacts
+  const john = new Contact("John Doe", "john.doe@example.com", "555-1234");
+  myAddressBook.addContact(john);
   
-  const contact2 = new Contact('Jane', 'Smith', '456 Elm St', 'Othertown', 'CA', '54321', '555-555-1234', 'jane.smith@example.com');
-  addressBook.addContact(contact2);
+  const jane = new Contact("Jane Smith", "jane.smith@example.com", "555-5678");
+  myAddressBook.addContact(jane);
   
-  console.log(addressBook.getNames()); // Output: ["John Doe", "Jane Smith"]
-  console.log(addressBook.getTotalContacts()); // Output: 2
+  // Filter contacts by name
+  const filteredContacts = myAddressBook.filterContactsByName("john");
+  console.log(filteredContacts);
+  
+  // Map contacts to emails
+  const mappedContacts = myAddressBook.mapContactsToEmails();
+  console.log(mappedContacts);
+  
+  // Reduce contacts to phone numbers
+  const reducedContacts = myAddressBook.reduceContactsToPhoneNumbers();
+  console.log(reducedContacts);
+  
